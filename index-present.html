@@ -1,678 +1,567 @@
-<!doctype html>
+ <!doctype html>
 <html lang="pt-br">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>🎁 Presente + Vídeo (Isolado)</title>
+  <title>🎁 Presente + Vídeo (Glass)</title>
 
   <style>
     :root{
-      --bg:#0b1020;
-      --panel: rgba(20,20,30,.55);
+      --bg1:#050812;
+      --bg2:#0b1230;
+      --txt: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.72);
       --stroke: rgba(255,255,255,.14);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.68);
-      --shadow: 0 18px 50px rgba(0,0,0,.45);
-      --r: 18px;
+      --shadow: 0 24px 80px rgba(0,0,0,.55);
+      --r: 22px;
       --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
     }
+
     *{box-sizing:border-box}
+    html,body{height:100%}
+
     body{
-      margin:0; font-family:var(--font); color:var(--text);
+      margin:0;
+      font-family:var(--font);
+      color:var(--txt);
+      overflow:hidden;
       background:
-        radial-gradient(1100px 800px at 25% 20%, #24346b 0%, transparent 60%),
-        radial-gradient(1000px 750px at 80% 25%, #6b235e 0%, transparent 55%),
-        linear-gradient(135deg, #0b1020, #111a33);
-      min-height:100vh;
+        radial-gradient(900px 700px at 20% 18%, rgba(120,80,255,.30) 0%, transparent 60%),
+        radial-gradient(900px 700px at 82% 22%, rgba(255,90,190,.24) 0%, transparent 62%),
+        radial-gradient(1100px 900px at 50% 110%, rgba(70,210,255,.15) 0%, transparent 60%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
     }
-    header{
-      padding:18px;
-      display:flex; gap:12px; align-items:center; justify-content:space-between;
-      flex-wrap:wrap;
+
+    /* estrelas discretas */
+    .stars{
+      position:fixed;
+      inset:-30%;
+      background-image:
+        radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,.45) 40%, transparent 45%),
+        radial-gradient(1px 1px at 90px 120px, rgba(255,255,255,.30) 40%, transparent 45%),
+        radial-gradient(2px 2px at 210px 80px, rgba(255,255,255,.22) 40%, transparent 45%),
+        radial-gradient(1px 1px at 320px 210px, rgba(255,255,255,.18) 40%, transparent 45%),
+        radial-gradient(2px 2px at 430px 140px, rgba(255,255,255,.22) 40%, transparent 45%),
+        radial-gradient(1px 1px at 520px 260px, rgba(255,255,255,.18) 40%, transparent 45%);
+      background-size: 560px 320px;
+      opacity:.55;
+      animation: drift 18s linear infinite;
+      pointer-events:none;
+      filter: blur(.2px);
+      z-index: 0;
     }
-    .brand{display:flex; flex-direction:column; gap:4px;}
-    .brand h1{margin:0; font-size:16px;}
-    .brand p{margin:0; font-size:12px; color:var(--muted)}
-    .bar{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; align-items:center;}
-    .pill{
-      display:inline-flex;
-      gap:8px;
-      align-items:center;
-      padding:6px 10px;
-      border-radius:999px;
+    @keyframes drift{
+      from{transform: translate3d(0,0,0)}
+      to{transform: translate3d(-120px, 80px, 0)}
+    }
+
+    /* palco central */
+    .stage{
+      position:fixed;
+      inset:0;
+      display:grid;
+      place-items:center;
+      padding:24px;
+      z-index: 5;
+    }
+
+    .headline{
+      position:absolute;
+      top:18px;
+      left:0; right:0;
+      text-align:center;
+      pointer-events:none;
+      padding: 0 14px;
+    }
+    .headline h1{
+      margin:0;
+      font-size: clamp(22px, 4.4vw, 44px);
+      font-weight:900;
+      letter-spacing:.2px;
+      text-shadow: 0 18px 60px rgba(0,0,0,.60);
+    }
+    .headline p{
+      margin:10px 0 0;
+      font-size: clamp(12px, 2.2vw, 14px);
+      color: rgba(255,255,255,.82);
+      text-shadow: 0 14px 50px rgba(0,0,0,.55);
+      opacity:.95;
+    }
+
+    /* presente */
+    .giftWrap{
+      position:relative;
+      display:grid;
+      place-items:center;
+      gap:12px;
+      cursor:pointer;
+      user-select:none;
+      transform: translateY(14px);
+    }
+
+    .tap{
+      font-size:13px;
+      color: rgba(255,255,255,.86);
+      padding:10px 14px;
+      border-radius: 999px;
       border:1px solid rgba(255,255,255,.14);
       background: rgba(0,0,0,.18);
-      font-size:12px;
-      color: rgba(255,255,255,.80);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.45);
+      max-width:min(520px, 90vw);
+      text-align:center;
     }
 
-    .wrap{
-      padding: 0 18px 18px;
-      display:grid;
-      grid-template-columns: 390px 1fr;
-      gap:14px;
+    .gift3d{
+      width: 240px;
+      height: 240px;
+      position:relative;
+      transform-style: preserve-3d;
+      filter: drop-shadow(0 28px 70px rgba(0,0,0,.55));
+      animation: float 3.2s ease-in-out infinite;
     }
-    .card{
-      background: var(--panel);
-      border:1px solid var(--stroke);
-      border-radius: var(--r);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
+    @keyframes float{
+      0%,100%{transform: translateY(0) rotateX(12deg) rotateY(-12deg)}
+      50%{transform: translateY(-10px) rotateX(14deg) rotateY(-8deg)}
+    }
+
+    /* caixa glass */
+    .box{
+      position:absolute;
+      inset: 24px;
+      border-radius: 28px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: linear-gradient(135deg, rgba(255,255,255,.14), rgba(255,255,255,.04));
+      backdrop-filter: blur(12px);
       overflow:hidden;
     }
-    .card-h{
-      padding:12px 12px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-      display:flex; align-items:center; justify-content:space-between;
+    .box:before{
+      content:"";
+      position:absolute;
+      inset:-40%;
+      background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.55), transparent 48%);
+      transform: rotate(15deg);
+      opacity:.35;
+    }
+    .box:after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(140px 120px at 70% 30%, rgba(255,90,190,.22), transparent 60%),
+        radial-gradient(160px 140px at 25% 80%, rgba(70,210,255,.18), transparent 60%);
+      opacity:.9;
+      mix-blend-mode: screen;
+    }
+
+    /* tampa */
+    .lid{
+      position:absolute;
+      left: 18px; right:18px;
+      top: 10px;
+      height: 74px;
+      border-radius: 26px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: linear-gradient(135deg, rgba(255,255,255,.16), rgba(255,255,255,.06));
+      backdrop-filter: blur(12px);
+      transform-origin: 50% 100%;
+      box-shadow: 0 18px 45px rgba(0,0,0,.35);
+      overflow:hidden;
+    }
+    .lid:before{
+      content:"";
+      position:absolute;
+      inset:-60%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.70), transparent 55%);
+      transform: rotate(18deg);
+      opacity:.35;
+    }
+
+    /* fita neon */
+    .ribbonV, .ribbonH{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+    }
+    .ribbonV:before{
+      content:"";
+      position:absolute;
+      top: 12px; bottom: 18px;
+      left: 50%;
+      width: 18px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255,90,190,.95), rgba(70,210,255,.85));
+      filter: drop-shadow(0 0 18px rgba(255,90,190,.35));
+      opacity:.9;
+    }
+    .ribbonH:before{
+      content:"";
+      position:absolute;
+      left: 28px; right: 28px;
+      top: 50%;
+      height: 18px;
+      transform: translateY(-50%);
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(70,210,255,.90), rgba(255,90,190,.90));
+      filter: drop-shadow(0 0 18px rgba(70,210,255,.30));
+      opacity:.9;
+    }
+
+    /* laço */
+    .bow{
+      position:absolute;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 86px;
+      height: 56px;
+      pointer-events:none;
+      filter: drop-shadow(0 18px 30px rgba(0,0,0,.35));
+    }
+    .bow:before, .bow:after{
+      content:"";
+      position:absolute;
+      top: 12px;
+      width: 38px;
+      height: 30px;
+      border-radius: 18px 18px 18px 6px;
+      background: linear-gradient(135deg, rgba(255,90,190,.95), rgba(70,210,255,.85));
+      opacity:.92;
+    }
+    .bow:before{left:0; transform: rotate(-18deg)}
+    .bow:after{right:0; transform: rotate(18deg); border-radius: 18px 18px 6px 18px;}
+    .knot{
+      position:absolute;
+      top: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 18px;
+      height: 18px;
+      border-radius: 8px;
+      background: rgba(255,255,255,.82);
+      opacity:.35;
+    }
+
+    /* brilho */
+    .glow{
+      position:absolute;
+      inset:-40%;
+      background: radial-gradient(circle at 50% 55%, rgba(255,255,255,.20), transparent 55%);
+      opacity:.9;
+      pointer-events:none;
+    }
+
+    /* partículas */
+    canvas#fx{
+      position:absolute;
+      inset:-80px;
+      width: calc(100% + 160px);
+      height: calc(100% + 160px);
+      pointer-events:none;
+    }
+
+    /* animação abrir */
+    .opening .lid{ animation: lidPop .65s cubic-bezier(.2,.9,.1,1) forwards; }
+    @keyframes lidPop{
+      0%{transform: rotateX(0deg) translateY(0)}
+      60%{transform: rotateX(55deg) translateY(-12px)}
+      100%{transform: rotateX(70deg) translateY(-18px)}
+    }
+    .opening .gift3d{ animation: punch .75s ease forwards; }
+    @keyframes punch{
+      0%{transform: translateY(0) rotateX(12deg) rotateY(-12deg) scale(1)}
+      50%{transform: translateY(-6px) rotateX(16deg) rotateY(-6deg) scale(1.02)}
+      100%{transform: translateY(-2px) rotateX(14deg) rotateY(-10deg) scale(1.00)}
+    }
+
+    /* overlay vídeo */
+    .overlay{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.88);
+      display:none;
+      place-items:center;
+      z-index:9999;
+      padding:14px;
+    }
+    .overlay.show{display:grid;}
+    .videoBox{
+      width:min(1024px, 100%);
+      border-radius: 20px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(16,16,22,.72);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(14px);
+    }
+    .videoTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
       gap:10px;
-    }
-    .card-h .t{font-size:13px; color:var(--text); opacity:.95}
-    .card-b{padding:12px}
-
-    .theme{
-      padding:12px;
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(255,255,255,.08);
-      display:flex; gap:10px; align-items:flex-start;
-    }
-    .emoji{font-size:22px; width:32px; text-align:center}
-    .theme .name{font-size:13px; margin:0}
-    .theme .desc{font-size:12px; color:var(--muted); margin:4px 0 0}
-
-    label{font-size:12px; color:var(--muted)}
-    input, textarea{
-      width:100%;
-      margin-top:6px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(0,0,0,.22);
-      color: var(--text);
       padding:10px 12px;
-      outline:none;
-      font-size:13px;
+      border-bottom:1px solid rgba(255,255,255,.10);
     }
-    textarea{min-height: 110px; resize:vertical;}
-    .grid{display:grid; gap:10px;}
-    .hint{font-size:12px; color:var(--muted); line-height:1.45}
-    .sep{height:1px; background: rgba(255,255,255,.10); margin:12px 0;}
-
+    .videoTop .t{
+      font-size:13px;
+      color: rgba(255,255,255,.90);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 78vw;
+    }
     .btn{
       border-radius: 14px;
       border:1px solid rgba(255,255,255,.16);
       background: rgba(255,255,255,.10);
-      color: var(--text);
-      padding:10px 12px;
+      color: var(--txt);
+      padding:8px 10px;
       cursor:pointer;
       font-size:13px;
-      display:inline-flex; gap:8px; align-items:center;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
       text-decoration:none;
-      user-select:none;
     }
     .btn:hover{ background: rgba(255,255,255,.14); }
-    .btn:disabled{ opacity:.5; cursor:not-allowed; }
 
-    .previewWrap{
-      height: calc(100vh - 100px);
-      border-radius: 16px;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.15);
-      position:relative;
-    }
-    iframe.preview{
+    video{
       width:100%;
-      height:100%;
-      border:0;
-      background: transparent;
+      height: min(78vh, 680px);
+      background:#000;
+      display:block;
     }
 
-    .toast{
-      position: fixed;
-      left: 50%;
-      bottom: 18px;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,.55);
-      border: 1px solid rgba(255,255,255,.14);
-      color: rgba(255,255,255,.92);
-      padding: 10px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      backdrop-filter: blur(12px);
-      box-shadow: var(--shadow);
-      opacity:0;
-      pointer-events:none;
-      transition:.18s ease;
-    }
-    .toast.show{opacity:1;}
-
-    @media (max-width: 980px){
-      .wrap{grid-template-columns: 1fr; }
-      .previewWrap{height: 70vh;}
+    @media (max-width: 520px){
+      .gift3d{ width: 210px; height: 210px; }
     }
   </style>
 </head>
 
 <body>
-  <header>
-    <div class="brand">
-      <h1>🎁 Presente + Vídeo (Isolado)</h1>
-      <p>Projeto simples pra gravar vídeos/anúncios — sem upload, sem pagamento, sem publish.</p>
-      <div class="hint" style="margin-top:4px;">
-        Dica: pra gravar anúncio, use OBS / gravação de tela do celular. O vídeo toca ao tocar no presente (gesto do usuário).
-      </div>
-    </div>
-
-    <div class="bar">
-      <span class="pill" id="statusPill">📼 nenhum vídeo</span>
-      <button class="btn" id="btnOpenPreview">🧪 Abrir preview em nova aba</button>
-      <button class="btn" id="btnReset">♻️ Reset</button>
-    </div>
-  </header>
-
-  <div class="wrap">
-    <!-- Esquerda -->
-    <div class="card">
-      <div class="card-h">
-        <div class="t">🎭 Tema</div>
-        <div class="hint">Isolado</div>
-      </div>
-      <div class="card-b">
-        <div class="theme">
-          <div class="emoji">🎁</div>
-          <div>
-            <p class="name"><b>Presente + Vídeo (Glass)</b></p>
-            <p class="desc">Presente no centro → abre e toca vídeo com áudio.</p>
-          </div>
-        </div>
-
-        <div class="sep"></div>
-
-        <div class="grid">
-          <div>
-            <label for="title">Título</label>
-            <input id="title" value="Hoje é dia de comemorar! 🎉" placeholder="Título..." />
-          </div>
-
-          <div>
-            <label for="caption">Legenda (opcional)</label>
-            <input id="caption" value="Toque no presente pra abrir a surpresa" placeholder="Legenda..." />
-          </div>
-
-          <div>
-            <label for="video">Vídeo (local)</label>
-            <input id="video" type="file" accept="video/*" />
-            <div class="hint" id="videoHelp" style="margin-top:6px;">
-              Selecione um vídeo do seu dispositivo. (Não envia pra internet.)
-            </div>
-          </div>
-
-          <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <button class="btn" id="btnPlayHint">▶️ Simular clique no presente</button>
-            <button class="btn" id="btnCopyScript">📝 Copiar “script” de anúncio</button>
-          </div>
-
-          <div class="hint">
-            Observações:
-            <ul style="margin:8px 0 0; padding-left:18px;">
-              <li>O vídeo toca com áudio só depois de um clique (regra do navegador).</li>
-              <li>Se você abrir via <b>file://</b> e o vídeo não tocar, rode um servidor local (ex: Live Server).</li>
-              <li>Esse projeto é só pra gravação/teste, sem Stripe e sem API.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Direita -->
-    <div class="card">
-      <div class="card-h">
-        <div class="t">👀 Preview</div>
-        <div class="hint">Atualiza automaticamente</div>
-      </div>
-      <div class="card-b">
-        <div class="previewWrap">
-          <iframe class="preview" id="preview" sandbox="allow-scripts allow-same-origin" allow="autoplay; fullscreen" allowfullscreen></iframe>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="toast" id="toast">Copiado ✅</div>
-
-<script>
-  const $ = (s)=>document.querySelector(s);
-
-  const state = {
-    title: $("#title").value,
-    caption: $("#caption").value,
-    videoUrl: "",     // object url
-    videoName: "",
-    videoType: "",
-  };
-
-  function toast(msg){
-    const t = $("#toast");
-    t.textContent = msg || "OK";
-    t.classList.add("show");
-    setTimeout(()=>t.classList.remove("show"), 1200);
-  }
-
-  function esc(s){
-    return String(s ?? "").replace(/[&<>"']/g, m => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-    }[m]));
-  }
-
-  function setStatus(){
-    const pill = $("#statusPill");
-    if(state.videoUrl){
-      pill.textContent = `📼 ${state.videoName || "vídeo pronto"}`;
-    } else {
-      pill.textContent = "📼 nenhum vídeo";
-    }
-  }
-
-  function genPreviewHtml(){
-    const title = esc(state.title || "Hoje é dia de comemorar! 🎉");
-    const caption = esc(state.caption || "Toque no presente pra abrir a surpresa");
-    const videoUrl = state.videoUrl ? esc(state.videoUrl) : "";
-
-    // Nota: autoplay geralmente é bloqueado; aqui tocamos via clique no presente.
-    return `<!doctype html>
-<html lang="pt-br">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Presente + Vídeo</title>
-<style>
-  :root{
-    --text: rgba(255,255,255,.92);
-    --muted: rgba(255,255,255,.72);
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0; min-height:100vh; color:var(--text);
-    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-    background:
-      radial-gradient(900px 700px at 30% 25%, rgba(78,105,255,.25) 0%, transparent 60%),
-      radial-gradient(900px 650px at 75% 25%, rgba(255,72,215,.22) 0%, transparent 55%),
-      linear-gradient(135deg, #0b1020, #111a33);
-    overflow:hidden;
-  }
-  .stars{
-    position:absolute; inset:0; pointer-events:none;
-    background-image:
-      radial-gradient(rgba(255,255,255,.35) 1px, transparent 1px);
-    background-size: 120px 120px;
-    opacity:.10;
-    filter: blur(.2px);
-  }
-  .wrap{
-    position:relative;
-    min-height:100vh;
-    display:grid;
-    place-items:center;
-    padding: 26px 18px;
-  }
-  .top{
-    position:absolute;
-    top: 22px;
-    left: 0; right: 0;
-    text-align:center;
-    padding: 0 12px;
-  }
-  h1{
-    margin:0;
-    font-size: clamp(22px, 3vw, 44px);
-    letter-spacing:.2px;
-    text-shadow: 0 18px 40px rgba(0,0,0,.55);
-  }
-  .sub{
-    margin-top:10px;
-    font-size: 13px;
-    color: var(--muted);
-  }
-
-  .giftStage{
-    display:grid;
-    place-items:center;
-    gap: 14px;
-  }
-
-  .gift{
-    width: min(320px, 62vw);
-    aspect-ratio: 1/1;
-    border-radius: 26px;
-    border: 1px solid rgba(255,255,255,.16);
-    background: rgba(255,255,255,.08);
-    box-shadow: 0 18px 50px rgba(0,0,0,.45);
-    backdrop-filter: blur(14px);
-    position: relative;
-    overflow:hidden;
-    cursor: pointer;
-    transform: translateZ(0);
-  }
-
-  /* fita */
-  .ribbonV, .ribbonH{
-    position:absolute;
-    background: linear-gradient(180deg, rgba(255,72,215,.95), rgba(78,205,255,.92));
-    filter: drop-shadow(0 12px 24px rgba(0,0,0,.35));
-    opacity:.92;
-  }
-  .ribbonV{
-    width: 18%;
-    height: 100%;
-    left: 41%;
-    top: 0;
-    border-radius: 14px;
-  }
-  .ribbonH{
-    height: 18%;
-    width: 100%;
-    top: 41%;
-    left: 0;
-    border-radius: 14px;
-  }
-  /* tampa */
-  .lid{
-    position:absolute;
-    left: 6%;
-    top: 6%;
-    width: 88%;
-    height: 20%;
-    border-radius: 20px;
-    background: rgba(255,255,255,.12);
-    border:1px solid rgba(255,255,255,.14);
-    box-shadow: 0 18px 45px rgba(0,0,0,.35);
-    transform-origin: left center;
-    transform: rotate(0deg) translateY(0);
-    transition: transform .55s cubic-bezier(.2,.8,.2,1);
-  }
-  /* laço */
-  .bow{
-    position:absolute;
-    top: 12%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 48%;
-    height: 22%;
-    pointer-events:none;
-    opacity:.95;
-  }
-  .bow:before, .bow:after{
-    content:"";
-    position:absolute;
-    width: 48%;
-    height: 100%;
-    border-radius: 999px;
-    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.30), transparent 40%),
-                linear-gradient(180deg, rgba(255,72,215,.95), rgba(78,205,255,.92));
-    filter: drop-shadow(0 12px 24px rgba(0,0,0,.35));
-  }
-  .bow:before{ left:0; transform: rotate(-18deg); }
-  .bow:after{ right:0; transform: rotate(18deg); }
-
-  .btn{
-    display:inline-flex;
-    gap:10px;
-    align-items:center;
-    padding: 10px 14px;
-    border-radius: 999px;
-    border:1px solid rgba(255,255,255,.16);
-    background: rgba(0,0,0,.18);
-    color: rgba(255,255,255,.90);
-    font-size: 13px;
-    cursor: pointer;
-    user-select:none;
-  }
-  .btn:hover{ background: rgba(0,0,0,.26); }
-  .btn[disabled]{opacity:.55; cursor:not-allowed;}
-
-  /* overlay do vídeo */
-  .overlay{
-    position:fixed; inset:0;
-    background: rgba(0,0,0,.60);
-    display:none;
-    place-items:center;
-    padding: 18px;
-  }
-  .modal{
-    width: min(920px, 100%);
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,.16);
-    background: rgba(20,20,30,.78);
-    box-shadow: 0 18px 60px rgba(0,0,0,.55);
-    backdrop-filter: blur(14px);
-    overflow:hidden;
-  }
-  .modalH{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap: 10px;
-    padding: 12px 14px;
-    border-bottom:1px solid rgba(255,255,255,.12);
-  }
-  .modalH .t{
-    font-size: 13px;
-    color: rgba(255,255,255,.90);
-  }
-  .modalB{ padding: 14px; }
-  video{
-    width:100%;
-    max-height: 70vh;
-    border-radius: 14px;
-    background: #000;
-    border: 1px solid rgba(255,255,255,.10);
-  }
-  .hint{
-    font-size:12px;
-    color: rgba(255,255,255,.72);
-    margin-top:10px;
-    line-height:1.4;
-  }
-
-  /* estado aberto */
-  body.open .lid{
-    transform: rotate(-18deg) translateY(-22%);
-  }
-  body.open .gift{
-    animation: pop .55s cubic-bezier(.2,.8,.2,1) both;
-  }
-  @keyframes pop{
-    0%{transform: scale(1);}
-    55%{transform: scale(1.04);}
-    100%{transform: scale(1.01);}
-  }
-</style>
-</head>
-<body>
   <div class="stars"></div>
 
-  <div class="wrap">
-    <div class="top">
-      <h1>${title}</h1>
-      <div class="sub">${caption}</div>
+  <div class="stage" id="stage">
+    <div class="headline">
+      <h1 id="outTitle"></h1>
+      <p id="outCaption"></p>
     </div>
 
-    <div class="giftStage">
-      <div class="gift" id="gift" role="button" aria-label="Abrir presente">
-        <div class="lid"></div>
-        <div class="bow"></div>
+    <div class="giftWrap" id="giftWrap" aria-label="Abrir presente">
+      <div class="gift3d" id="gift3d">
+        <canvas id="fx"></canvas>
+        <div class="glow"></div>
+
+        <div class="lid" id="lid"></div>
+
+        <div class="box"></div>
         <div class="ribbonV"></div>
         <div class="ribbonH"></div>
+        <div class="bow"><div class="knot"></div></div>
       </div>
 
-      <button class="btn" id="btnOpen" ${videoUrl ? "" : "disabled"}>
-        ✨ Abrir a surpresa
-      </button>
-
-      <div class="hint" id="noVideoHint" style="${videoUrl ? "display:none" : ""}">
-        Selecione um vídeo no editor à esquerda para testar.
-      </div>
+      <div class="tap" id="tapText">✨ Toque no presente pra abrir a surpresa</div>
     </div>
   </div>
 
-  <div class="overlay" id="overlay">
-    <div class="modal">
-      <div class="modalH">
-        <div class="t">🎬 Sua surpresa</div>
-        <button class="btn" id="btnClose">✖️ Fechar</button>
-      </div>
-      <div class="modalB">
-        <video id="vid" controls playsinline></video>
-        <div class="hint">
-          Se o áudio não tocar, clique em play no player (restrições do navegador).
+  <div class="overlay" id="overlay" aria-hidden="true">
+    <div class="videoBox">
+      <div class="videoTop">
+        <div class="t" id="videoTitle">🎬 Vídeo</div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn" id="btnFullscreen" type="button">⛶ Fullscreen</button>
+          <button class="btn" id="btnClose" type="button">✖️ Fechar</button>
         </div>
       </div>
+      <video id="video" controls playsinline preload="metadata"></video>
     </div>
   </div>
 
-<script>
-  const VIDEO_URL = ${videoUrl ? `"${videoUrl}"` : "null"};
+  <script>
+    // ======= EDITA AQUI NO TXT =======
+    const TITLE = "Hoje é dia de comemorar! 🎉";
+    const CAPTION = "Toque no presente pra abrir a surpresa";
 
-  const gift = document.getElementById("gift");
-  const btnOpen = document.getElementById("btnOpen");
-  const overlay = document.getElementById("overlay");
-  const btnClose = document.getElementById("btnClose");
-  const vid = document.getElementById("vid");
+    // Coloque "video.mp4" na mesma pasta do index, ou use uma URL direta (mp4/webm).
+    // Se deixar vazio, o presente ainda aparece, mas vai avisar que não tem vídeo.
+    const VIDEO_URL = "video.mp4";
+    // =================================
 
-  function openGift(){
-    document.body.classList.add("open");
-    if(!VIDEO_URL) return;
+    const $ = (s)=>document.querySelector(s);
 
-    overlay.style.display = "grid";
-    vid.src = VIDEO_URL;
+    const outTitle   = $("#outTitle");
+    const outCaption = $("#outCaption");
+    const tapText    = $("#tapText");
 
-    // tenta tocar (pode falhar sem gesto do usuário; aqui é chamado por clique)
-    const p = vid.play();
-    if(p && typeof p.catch === "function") p.catch(()=>{});
-  }
+    const giftWrap = $("#giftWrap");
+    const gift3d   = $("#gift3d");
 
-  function closeGift(){
-    overlay.style.display = "none";
-    try{ vid.pause(); }catch(e){}
-  }
+    const overlay       = $("#overlay");
+    const video         = $("#video");
+    const videoTitle    = $("#videoTitle");
+    const btnClose      = $("#btnClose");
+    const btnFullscreen = $("#btnFullscreen");
 
-  gift.addEventListener("click", openGift);
-  btnOpen.addEventListener("click", openGift);
-  btnClose.addEventListener("click", closeGift);
-  overlay.addEventListener("click", (e)=>{ if(e.target === overlay) closeGift(); });
+    let opening = false;
 
-  // Para facilitar: tecla ESC fecha
-  window.addEventListener("keydown", (e)=>{
-    if(e.key === "Escape") closeGift();
-  });
-</script>
-</body>
-</html>`;
-  }
+    outTitle.textContent = TITLE || "Hoje é dia de comemorar! 🎉";
+    outCaption.textContent = CAPTION || "";
+    outCaption.style.display = (CAPTION && CAPTION.trim()) ? "block" : "none";
+    tapText.textContent = CAPTION ? `✨ ${CAPTION}` : "✨ Toque no presente pra abrir a surpresa";
 
-  function updatePreview(){
-    state.title = $("#title").value;
-    state.caption = $("#caption").value;
+    // FX: partículas sparkle
+    const canvas = $("#fx");
+    const ctx = canvas.getContext("2d", { alpha: true });
 
-    $("#preview").srcdoc = genPreviewHtml();
-    setStatus();
-  }
+    let W = 0, H = 0;
+    let particles = [];
+    let raf = 0;
 
-  // Inputs
-  $("#title").addEventListener("input", updatePreview);
-  $("#caption").addEventListener("input", updatePreview);
+    function resizeFX(){
+      const rect = gift3d.getBoundingClientRect();
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
 
-  $("#video").addEventListener("change", (e)=>{
-    const f = e.target.files && e.target.files[0] ? e.target.files[0] : null;
+      W = Math.max(1, Math.floor(rect.width * dpr));
+      H = Math.max(1, Math.floor(rect.height * dpr));
 
-    // limpa URL anterior
-    if(state.videoUrl){
-      try{ URL.revokeObjectURL(state.videoUrl); }catch(_){}
-      state.videoUrl = "";
+      canvas.width = W;
+      canvas.height = H;
     }
 
-    if(!f){
-      state.videoName = "";
-      state.videoType = "";
-      $("#videoHelp").textContent = "Selecione um vídeo do seu dispositivo. (Não envia pra internet.)";
-      updatePreview();
-      return;
+    window.addEventListener("resize", resizeFX, { passive: true });
+    resizeFX();
+
+    function spawnBurst(){
+      resizeFX();
+      particles = [];
+      cancelAnimationFrame(raf);
+
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      const cx = W/2;
+      const cy = H/2 + 10*dpr;
+
+      const n = 120;
+      for(let i=0;i<n;i++){
+        const a = Math.random() * Math.PI * 2;
+        const sp = (Math.random()*3.2 + 2.4) * dpr;
+
+        particles.push({
+          x: cx,
+          y: cy,
+          vx: Math.cos(a)*sp,
+          vy: Math.sin(a)*sp - (Math.random()*2.2*dpr),
+          r: (Math.random()*2.2 + 0.8)*dpr,
+          life: 1,
+          dl: Math.random()*0.018 + 0.012,
+          tw: Math.random()*0.8 + 0.2
+        });
+      }
+
+      tick();
     }
 
-    state.videoName = f.name || "video";
-    state.videoType = f.type || "";
-    state.videoUrl = URL.createObjectURL(f);
+    function tick(){
+      ctx.clearRect(0,0,W,H);
+      let alive = 0;
 
-    $("#videoHelp").textContent = "✅ Vídeo carregado localmente. Clique no presente pra tocar.";
-    updatePreview();
-  });
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
 
-  // Botão: abrir preview em nova aba (ótimo pra gravar)
-  $("#btnOpenPreview").addEventListener("click", ()=>{
-    const html = genPreviewHtml();
-    const w = window.open();
-    if(!w){
-      alert("Seu navegador bloqueou pop-up. Permita pop-ups para este site.");
-      return;
+      for(const p of particles){
+        p.vy += 0.08 * dpr;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= p.dl;
+
+        if(p.life > 0){
+          alive++;
+          const alpha = p.life;
+          const glow = (p.tw + Math.sin((1-alpha)*10))*0.5;
+          const hue = (p.x / W) * 360;
+
+          ctx.save();
+          ctx.globalAlpha = alpha * 0.9;
+          ctx.fillStyle = `hsla(${hue}, 90%, 65%, ${alpha})`;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r*(1+glow*0.8), 0, Math.PI*2);
+          ctx.fill();
+
+          ctx.globalAlpha = alpha * 0.22;
+          ctx.fillStyle = `hsla(${hue}, 100%, 85%, ${alpha})`;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r*2.2*(1+glow), 0, Math.PI*2);
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      if(alive > 0){
+        raf = requestAnimationFrame(tick);
+      }else{
+        ctx.clearRect(0,0,W,H);
+      }
     }
-    w.document.open();
-    w.document.write(html);
-    w.document.close();
-  });
 
-  // Reset
-  $("#btnReset").addEventListener("click", ()=>{
-    $("#title").value = "Hoje é dia de comemorar! 🎉";
-    $("#caption").value = "Toque no presente pra abrir a surpresa";
-    $("#video").value = "";
-
-    if(state.videoUrl){
-      try{ URL.revokeObjectURL(state.videoUrl); }catch(_){}
+    function tryEnterFullscreen(el){
+      try{
+        if(el.requestFullscreen) return el.requestFullscreen();
+        if(el.webkitRequestFullscreen) return el.webkitRequestFullscreen();
+        if(el.webkitEnterFullscreen) return el.webkitEnterFullscreen();
+      }catch(e){}
     }
-    state.videoUrl = "";
-    state.videoName = "";
-    state.videoType = "";
-    $("#videoHelp").textContent = "Selecione um vídeo do seu dispositivo. (Não envia pra internet.)";
-    updatePreview();
-  });
 
-  // “Simular clique no presente” (abre o overlay dentro do iframe via postMessage)
-  $("#btnPlayHint").addEventListener("click", ()=>{
-    const frame = $("#preview");
-    if(!frame || !frame.contentWindow) return;
-    // Não dá pra “clicar” lá dentro diretamente; o jeito simples é abrir em nova aba.
-    toast("Use “Abrir preview em nova aba” ✅");
-  });
+    async function openGift(){
+      if(opening) return;
 
-  // Copiar script de anúncio
-  $("#btnCopyScript").addEventListener("click", async ()=>{
-    const script =
-`Roteiro (10–12s) — Presente + Vídeo
+      // sempre anima o presente (mesmo sem vídeo)
+      opening = true;
+      giftWrap.classList.add("opening");
+      spawnBurst();
 
-0–2s (hook):
-“Se você vai mandar um vídeo pra alguém… não manda assim.”
+      await new Promise(r=>setTimeout(r, 650));
+      giftWrap.classList.remove("opening");
 
-2–6s (ação):
-Mostre o editor + selecione o vídeo + título.
-“Eu escondi o vídeo dentro de um presente.”
+      if(!VIDEO_URL || !String(VIDEO_URL).trim()){
+        opening = false;
+        alert("Sem vídeo: edite a variável VIDEO_URL no arquivo.");
+        return;
+      }
 
-6–10s (payoff):
-Clique no presente e o vídeo toca com áudio.
-“Quando a pessoa abre… surpresa.”
+      overlay.classList.add("show");
+      overlay.setAttribute("aria-hidden", "false");
 
-10–12s (CTA):
-“Quer fazer o seu? Comenta ‘PRESENTE’ / link na bio.”`;
+      videoTitle.textContent = (TITLE || "Vídeo").trim();
+      video.src = VIDEO_URL;
 
-    try{
-      await navigator.clipboard.writeText(script);
-      toast("Script copiado ✅");
-    }catch{
-      alert(script);
+      try{
+        await video.play(); // clique do usuário -> permite áudio
+      }catch(e){
+        // se o browser bloquear, o usuário dá play no controls
+        console.warn("play bloqueado:", e);
+      }
+
+      tryEnterFullscreen(video);
+      opening = false;
     }
-  });
 
-  // inicial
-  updatePreview();
-</script>
+    giftWrap.addEventListener("click", openGift);
+
+    btnClose.addEventListener("click", ()=>{
+      overlay.classList.remove("show");
+      overlay.setAttribute("aria-hidden", "true");
+      try{ video.pause(); }catch(e){}
+    });
+
+    btnFullscreen.addEventListener("click", ()=> tryEnterFullscreen(video));
+
+    overlay.addEventListener("click", (e)=>{
+      if(e.target === overlay){
+        overlay.classList.remove("show");
+        overlay.setAttribute("aria-hidden", "true");
+        try{ video.pause(); }catch(e){}
+      }
+    });
+  </script>
 </body>
 </html>
+
